@@ -2,14 +2,14 @@ import * as THREE from 'three';
 import gsap from 'gsap'
 import "./style.css"
 import {OrbitControls} from "three/examples/jsm/controls/OrbitControls"
-
+// import {PipePair} from './pipePair.js'
+import { PipePair } from './pipePair';
 // scene
 const timeStep = 1 / 60; // time between frames
 const gravity = 40;
 const maxVelocity = 100;
 const jumpForce = -6;
 const damping = 0.09; // damping factor to apply smoothing
-
 let velocity = 0;
 let position = new THREE.Vector3();
 const scene = new THREE.Scene()
@@ -34,6 +34,7 @@ widerLight.position.set(0,10,10)
 light.position.set(0,10,10)
 scene.add(widerLight)
 scene.add(light)
+
 const sizes= {
   width: window.innerWidth,
   height: window.innerHeight 
@@ -41,22 +42,18 @@ const sizes= {
 // add Camera
 const camera = new THREE.PerspectiveCamera(60,sizes.width/sizes.height, 0.1,100)
 camera.position.z=20
-// adding slider
-const camSlider= document.querySelector('.camHeight')
-const camValue=document.querySelector('.camValue')
-
-// // update value on screen
-// camValue.innerHTML=camSlider.value
-// camSlider.oninput=()=>{
-//   camValue.innerHTML=camSlider.value
-// }
-// adding camera
 scene.add(camera)
-// modify camera height with slider
-// camSlider.addEventListener('input',(e)=>{
-//   camera.position.z=e.target.value;
-//   console.log(camSlider.value)
-// })
+
+
+let pp= new PipePair(1,1,10)
+
+// scene.add(pp.getMesh())
+
+// console.log(pp.getMesh())
+
+
+
+
 
 //Renderer
 const canvas = document.querySelector('.webgl')
@@ -69,8 +66,6 @@ renderer.setPixelRatio(.4)
 renderer.render(scene, camera)
 
 
-// jump on spacebar
-// only works once
 let jumped=false;
 let isJumping = false;
 document.addEventListener('keydown', function(event) {
@@ -105,32 +100,8 @@ window.addEventListener('resize',() => {
   renderer.setSize(sizes.width,sizes.height)
 } )
 
-// calculate acceleration for mesh
 
 
-// function simulateGravity(mass){
-//   // F=ma
-//   // a=F/m
-//   // a= g
-//   // g=9.81
-//   // a=9.81
-//   let acceleration=0.5
-
-//   let direction = new THREE.Vector3(0,0,0)
-//   // get acceleration of 
-//   mesh.getWorldPosition(direction)
-//   console.log(direction)
-//   acceleration=.001
-//   // apply smoothing acceleration
-
-
-//   velocity+=acceleration
-//   mesh.position.y-=velocity
-//   console.log("velocity",velocity)
-//   // apply constant acceleration upwards
-
-
-// }
 
 
 function simulateGravity(mesh, timeStep, isJumping) {
@@ -138,7 +109,7 @@ function simulateGravity(mesh, timeStep, isJumping) {
   velocity += gravity * timeStep;
   velocity = Math.min(velocity, maxVelocity); // limit velocity
   // log mesh position
-  console.log(mesh.position.y)
+  // console.log(mesh.position.y)
   // apply jump force if jumping
   if (isJumping) {
     // 
@@ -146,8 +117,6 @@ function simulateGravity(mesh, timeStep, isJumping) {
 
   }
 
-  // apply damping to smooth out movement
-  // velocity *= damping;
 
   // update position
   if (mesh.position.y <-20   ) {
@@ -159,22 +128,12 @@ function simulateGravity(mesh, timeStep, isJumping) {
   position.y -= velocity * timeStep;
   mesh.position.copy(position);
 }
-// const loop= () =>{
-//   // mesh.position.x+=.001; 
-//   // controls.autoRotateSpeed+=1;
-//   // scene.geometry.rotateY(1)
-  
-  
-//   renderer.render(scene,camera)
-//   window.requestAnimationFrame(loop)
-//   simulateGravity(mesh, timeStep, jumped);
-//   // mesh.position.y= Math.sin(Date.now()/80)*.2 //idle animation
-  
-  
-//   // controls.autoRotateSpeed+=0.1; 
-//   // controls.update()  
-// }
-// loop() 
+
+
+
+
+
+
 let lastTime = 0;
 // let timeStep = 0;
 function gameLoop(currentTime) {
